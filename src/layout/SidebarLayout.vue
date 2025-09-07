@@ -14,33 +14,70 @@
           router
           class="sidebar-menu"
         >
+          <!-- 主要功能區域 -->
           <el-menu-item index="/">
-            <el-icon><House /></el-icon>
-            <template #title>首頁</template>
+            <el-icon><Odometer /></el-icon>
+            <template #title>儀錶板</template>
           </el-menu-item>
-          <el-menu-item index="/about">
-            <el-icon><InfoFilled /></el-icon>
-            <template #title>關於我們</template>
+          <el-menu-item index="/users">
+            <el-icon><User /></el-icon>
+            <template #title>用戶管理</template>
           </el-menu-item>
-          <el-sub-menu index="management">
-            <template #title>
-              <el-icon><Management /></el-icon>
-              <span>管理功能</span>
-            </template>
-            <el-menu-item index="/users">
-              <el-icon><User /></el-icon>
-              <template #title>用戶管理</template>
-            </el-menu-item>
-            <el-menu-item index="/settings">
-              <el-icon><Setting /></el-icon>
-              <template #title>系統設定</template>
-            </el-menu-item>
-            <el-menu-item index="/layout-demo">
-              <el-icon><Grid /></el-icon>
-              <template #title>Layout 演示</template>
-            </el-menu-item>
-          </el-sub-menu>
+          <el-menu-item index="/concerts">
+            <el-icon><VideoPlay /></el-icon>
+            <template #title>演唱會管理</template>
+          </el-menu-item>
+          <el-menu-item index="/orders">
+            <el-icon><ShoppingCart /></el-icon>
+            <template #title>訂單管理</template>
+          </el-menu-item>
         </el-menu>
+
+        <!-- 底部功能區域 - 在 sidebar 內部 -->
+        <div class="sidebar-bottom">
+          <!-- 多國語系 -->
+          <div class="bottom-item">
+            <el-dropdown @command="handleLanguageChange" v-if="!isCollapse">
+              <el-button type="text" class="bottom-button">
+                <el-icon><Setting /></el-icon>
+                <span>多國語系</span>
+                <el-icon class="el-icon--right"><ArrowDown /></el-icon>
+              </el-button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="zh-TW">繁體中文</el-dropdown-item>
+                  <el-dropdown-item command="en">English</el-dropdown-item>
+                  <el-dropdown-item command="zh-CN">简体中文</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+            <el-tooltip content="多國語系" placement="right" v-else>
+              <el-button type="text" class="bottom-button" @click="showLanguageMenu = true">
+                <el-icon><Setting /></el-icon>
+              </el-button>
+            </el-tooltip>
+          </div>
+
+          <!-- 暗黑模式 -->
+          <div class="bottom-item">
+            <el-tooltip :content="isDarkMode ? '切換到淺色模式' : '切換到暗黑模式'" placement="right">
+              <el-button type="text" class="bottom-button" @click="toggleDarkMode">
+                <el-icon><Moon v-if="!isDarkMode" /><Sunny v-else /></el-icon>
+                <span v-if="!isCollapse">{{ isDarkMode ? '淺色模式' : '暗黑模式' }}</span>
+              </el-button>
+            </el-tooltip>
+          </div>
+
+          <!-- 登入登出 -->
+          <div class="bottom-item">
+            <el-tooltip :content="isLoggedIn ? '登出' : '登入'" placement="right">
+              <el-button type="text" class="bottom-button" @click="handleLoginLogout">
+                <el-icon><SwitchButton /></el-icon>
+                <span v-if="!isCollapse">{{ isLoggedIn ? '登出' : '登入' }}</span>
+              </el-button>
+            </el-tooltip>
+          </div>
+        </div>
       </el-aside>
 
       <!-- 主要內容區域 -->
@@ -93,19 +130,28 @@
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { 
-  House, 
-  InfoFilled, 
+  Odometer, 
   User, 
+  VideoPlay,
+  ShoppingCart,
   Setting, 
-  Management,
+  Moon,
+  Sunny,
+  SwitchButton,
+  ArrowDown,
   ElementPlus,
   Expand,
-  Fold,
-  Grid
+  Fold
 } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const isCollapse = ref(false)
+
+// 底部功能狀態
+const isDarkMode = ref(false)
+const isLoggedIn = ref(true)
+const showLanguageMenu = ref(false)
+const currentLanguage = ref('zh-TW')
 
 // 切換側邊欄收縮狀態
 const toggleCollapse = () => {
@@ -115,7 +161,7 @@ const toggleCollapse = () => {
 // 麵包屑導航
 const breadcrumbs = computed(() => {
   const pathArray = route.path.split('/').filter(Boolean)
-  const breadcrumbItems = [{ name: '首頁', path: '/' }]
+  const breadcrumbItems = [{ name: '儀錶板', path: '/' }]
   
   let currentPath = ''
   pathArray.forEach((segment) => {
@@ -130,12 +176,37 @@ const breadcrumbs = computed(() => {
 // 根據路徑獲取路由名稱
 const getRouteName = (segment: string) => {
   const routeNames: Record<string, string> = {
-    'about': '關於我們',
     'users': '用戶管理',
-    'settings': '系統設定',
-    'layout-demo': 'Layout 演示'
+    'concerts': '演唱會管理',
+    'orders': '訂單管理'
   }
   return routeNames[segment] || segment
+}
+
+// 底部功能方法
+const handleLanguageChange = (language: string) => {
+  currentLanguage.value = language
+  // 這裡可以實現語言切換邏輯
+  console.log('切換語言到:', language)
+}
+
+const toggleDarkMode = () => {
+  isDarkMode.value = !isDarkMode.value
+  // 這裡可以實現暗黑模式切換邏輯
+  document.documentElement.classList.toggle('dark', isDarkMode.value)
+  console.log('切換暗黑模式:', isDarkMode.value)
+}
+
+const handleLoginLogout = () => {
+  if (isLoggedIn.value) {
+    // 登出邏輯
+    isLoggedIn.value = false
+    console.log('用戶已登出')
+  } else {
+    // 登入邏輯
+    isLoggedIn.value = true
+    console.log('用戶已登入')
+  }
 }
 </script>
 
@@ -147,6 +218,9 @@ const getRouteName = (segment: string) => {
 .sidebar {
   background-color: #304156;
   transition: width 0.3s;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .logo {
@@ -167,6 +241,7 @@ const getRouteName = (segment: string) => {
 .sidebar-menu {
   border: none;
   background-color: #304156;
+  flex: 1;
 }
 
 .sidebar-menu .el-menu-item,
@@ -183,6 +258,46 @@ const getRouteName = (segment: string) => {
 .sidebar-menu .el-menu-item.is-active {
   background-color: #409eff;
   color: white;
+}
+
+.sidebar-bottom {
+  border-top: 1px solid #434a50;
+  padding: 10px 0;
+  background-color: #304156;
+  margin-top: auto;
+}
+
+.bottom-item {
+  margin-bottom: 5px;
+}
+
+.bottom-item:last-child {
+  margin-bottom: 0;
+}
+
+.bottom-button {
+  width: 100%;
+  color: #bfcbd9;
+  text-align: left;
+  padding: 8px 20px;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bottom-button:hover {
+  background-color: #263445;
+  color: #409eff;
+}
+
+.bottom-button .el-icon {
+  font-size: 16px;
+}
+
+.bottom-button span {
+  font-size: 14px;
 }
 
 .header {

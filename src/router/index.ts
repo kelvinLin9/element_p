@@ -4,11 +4,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: () => import('@/pages/index.vue'),
+    name: 'Dashboard',
+    component: () => import('@/pages/dashboard.vue'),
     meta: {
-      title: '首頁',
-      layout: 'card' // 使用卡片佈局
+      title: '儀錶板',
+      layout: 'sidebar' // 使用側邊欄佈局
     }
   },
   {
@@ -17,7 +17,7 @@ const routes = [
     component: () => import('@/pages/about.vue'),
     meta: {
       title: '關於我們',
-      layout: 'default' // 使用默認佈局
+      layout: 'sidebar' // 使用側邊欄佈局
     }
   },
   {
@@ -26,6 +26,24 @@ const routes = [
     component: () => import('@/pages/users/index.vue'),
     meta: {
       title: '用戶管理',
+      layout: 'sidebar' // 使用側邊欄佈局
+    }
+  },
+  {
+    path: '/concerts',
+    name: 'Concerts',
+    component: () => import('@/pages/concerts/index.vue'),
+    meta: {
+      title: '演唱會管理',
+      layout: 'sidebar' // 使用側邊欄佈局
+    }
+  },
+  {
+    path: '/orders',
+    name: 'Orders',
+    component: () => import('@/pages/orders/index.vue'),
+    meta: {
+      title: '訂單管理',
       layout: 'sidebar' // 使用側邊欄佈局
     }
   },
@@ -44,7 +62,16 @@ const routes = [
     component: () => import('@/pages/layout-demo.vue'),
     meta: {
       title: 'Layout 演示',
-      layout: 'default' // 使用默認佈局
+      layout: 'sidebar' // 使用側邊欄佈局
+    }
+  },
+  {
+    path: '/welcome',
+    name: 'Welcome',
+    component: () => import('@/pages/index.vue'),
+    meta: {
+      title: '歡迎頁面',
+      layout: 'card' // 使用卡片佈局
     }
   }
 ]
