@@ -1,29 +1,12 @@
 <template>
   <div id="app">
-    <!-- 導航欄 -->
-    <el-menu
-      :default-active="$route.path"
-      mode="horizontal"
-      router
-      class="nav-menu"
-    >
-      <el-menu-item index="/">
-        <el-icon><House /></el-icon>
-        <span>首頁</span>
-      </el-menu-item>
-      <el-menu-item index="/about">
-        <el-icon><InfoFilled /></el-icon>
-        <span>關於我們</span>
-      </el-menu-item>
-    </el-menu>
-
-    <!-- 路由內容 -->
-    <router-view />
+    <!-- 動態 Layout 系統 -->
+    <DynamicLayout />
   </div>
 </template>
 
 <script setup lang="ts">
-import { House, InfoFilled } from '@element-plus/icons-vue'
+import DynamicLayout from '@/layout/DynamicLayout.vue'
 </script>
 
 <style>

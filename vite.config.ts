@@ -14,7 +14,8 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@use "~/styles/element/index.scss" as *;`
+        // 移除全局 SCSS 導入以避免衝突
+        // additionalData: `@use "@/styles/element/index.scss" as *;`
       },
     },
   },
