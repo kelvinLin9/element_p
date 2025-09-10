@@ -7,7 +7,7 @@ const routes = [
     name: 'Dashboard',
     component: () => import('@/pages/dashboard.vue'),
     meta: {
-      title: '儀錶板',
+      title: '儀錶板 - 首頁',
       layout: 'sidebar' // 使用側邊欄佈局
     }
   },
@@ -56,21 +56,13 @@ const routes = [
       layout: 'sidebar' // 使用側邊欄佈局
     }
   },
+  // 可選：保留作為介紹頁面，但改用不常見的路徑
   {
-    path: '/layout-demo',
-    name: 'LayoutDemo',
-    component: () => import('@/pages/layout-demo.vue'),
-    meta: {
-      title: 'Layout 演示',
-      layout: 'sidebar' // 使用側邊欄佈局
-    }
-  },
-  {
-    path: '/welcome',
-    name: 'Welcome',
+    path: '/intro',
+    name: 'Introduction',
     component: () => import('@/pages/index.vue'),
     meta: {
-      title: '歡迎頁面',
+      title: '系統介紹',
       layout: 'card' // 使用卡片佈局
     }
   }

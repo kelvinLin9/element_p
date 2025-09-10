@@ -15,6 +15,7 @@ import DynamicLayout from '@/layout/DynamicLayout.vue'
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+  height: 100vh; /* 確保應用高度為視窗高度 */
 }
 
 .nav-menu {
@@ -27,6 +28,10 @@ import DynamicLayout from '@/layout/DynamicLayout.vue'
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
 }
 
 body {

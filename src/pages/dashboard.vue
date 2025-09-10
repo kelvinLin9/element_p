@@ -14,9 +14,13 @@
                 <el-icon><User /></el-icon>
                 用戶管理
               </el-button>
-              <el-button type="success" size="large" @click="goToSettings">
-                <el-icon><Setting /></el-icon>
-                系統設定
+              <el-button type="success" size="large" @click="goToConcerts">
+                <el-icon><VideoPlay /></el-icon>
+                演唱會管理
+              </el-button>
+              <el-button type="warning" size="large" @click="goToOrders">
+                <el-icon><ShoppingCart /></el-icon>
+                訂單管理
               </el-button>
             </div>
           </div>
@@ -139,17 +143,25 @@
           <div class="quick-actions">
             <el-button type="primary" @click="goToUsers">
               <el-icon><User /></el-icon>
-              新增用戶
+              用戶管理
             </el-button>
-            <el-button type="success" @click="goToSettings">
+            <el-button type="success" @click="goToConcerts">
+              <el-icon><VideoPlay /></el-icon>
+              演唱會管理
+            </el-button>
+            <el-button type="warning" @click="goToOrders">
+              <el-icon><ShoppingCart /></el-icon>
+              訂單管理
+            </el-button>
+            <el-button type="info" @click="goToSettings">
               <el-icon><Setting /></el-icon>
               系統設定
             </el-button>
-            <el-button type="warning" @click="exportData">
+            <el-button @click="exportData">
               <el-icon><Download /></el-icon>
               匯出數據
             </el-button>
-            <el-button type="info" @click="viewReports">
+            <el-button @click="viewReports">
               <el-icon><Document /></el-icon>
               查看報表
             </el-button>
@@ -172,7 +184,8 @@ import {
   Setting, 
   TrendCharts,
   Download,
-  Document
+  Document,
+  VideoPlay
 } from '@element-plus/icons-vue'
 
 const router = useRouter()
@@ -229,6 +242,14 @@ const goToSettings = () => {
   router.push('/settings')
 }
 
+const goToConcerts = () => {
+  router.push('/concerts')
+}
+
+const goToOrders = () => {
+  router.push('/orders')
+}
+
 const exportData = () => {
   ElMessage.success('數據匯出功能開發中...')
 }
@@ -240,7 +261,7 @@ const viewReports = () => {
 
 <style scoped>
 .dashboard {
-  padding: 20px;
+  padding: 20px; /* 恢復padding，因為SidebarLayout的main-content現在padding設為0 */
 }
 
 .welcome-section {

@@ -213,11 +213,17 @@ const handleLoginLogout = () => {
 <style scoped>
 .sidebar-layout {
   height: 100vh;
+  width: 100vw;
+}
+
+.sidebar-layout .el-container {
+  height: 100%;
 }
 
 .sidebar {
   background-color: #304156;
   transition: width 0.3s;
+  height: 100vh; /* 固定側邊欄高度為視窗高度 */
   position: relative;
   display: flex;
   flex-direction: column;
@@ -232,6 +238,7 @@ const handleLoginLogout = () => {
   font-size: 18px;
   font-weight: bold;
   border-bottom: 1px solid #434a50;
+  flex-shrink: 0; /* 防止被壓縮 */
 }
 
 .logo-text {
@@ -242,6 +249,8 @@ const handleLoginLogout = () => {
   border: none;
   background-color: #304156;
   flex: 1;
+  overflow-y: auto; /* 菜單項過多時可滾動 */
+  overflow-x: hidden;
 }
 
 .sidebar-menu .el-menu-item,
@@ -264,7 +273,7 @@ const handleLoginLogout = () => {
   border-top: 1px solid #434a50;
   padding: 10px 0;
   background-color: #304156;
-  margin-top: auto;
+  flex-shrink: 0; /* 防止被壓縮 */
 }
 
 .bottom-item {
@@ -300,6 +309,13 @@ const handleLoginLogout = () => {
   font-size: 14px;
 }
 
+/* 右側內容區域 */
+.sidebar-layout .el-container:not(.sidebar) {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .header {
   background-color: white;
   border-bottom: 1px solid #e6e6e6;
@@ -307,6 +323,9 @@ const handleLoginLogout = () => {
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
+  height: 60px; /* 固定header高度 */
+  flex-shrink: 0; /* 防止被壓縮 */
+  z-index: 100;
 }
 
 .header-left {
@@ -321,5 +340,30 @@ const handleLoginLogout = () => {
 .main-content {
   background-color: #f5f5f5;
   padding: 20px;
+  flex: 1; /* 佔滿剩餘空間 */
+  overflow-y: auto; /* 內容過多時可滾動 */
+  overflow-x: hidden;
+  max-height: calc(100vh - 60px); /* 減去header高度 */
+}
+
+/* 確保Element Plus的container組件正確布局 */
+.sidebar-layout .el-aside {
+  height: 100vh !important;
+}
+
+.sidebar-layout .el-container .el-container {
+  height: 100vh;
+  flex-direction: column;
+}
+
+.sidebar-layout .el-main {
+  padding: 0 !important; /* 移除Element Plus默認padding */
+  flex: 1 !important;
+  overflow-y: auto !important;
+}
+
+.sidebar-layout .el-header {
+  height: 60px !important;
+  padding: 0 !important;
 }
 </style>
