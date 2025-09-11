@@ -1,129 +1,83 @@
 <template>
-  <div class="sidebar-layout">
+  <el-container style="height: 100vh">
+    <!-- 側邊欄 -->
+    <el-aside :width="isCollapse ? '64px' : '200px'">
+      <!-- Logo區域 -->
+      <div style="height: 60px; display: flex; align-items: center; justify-content: center; background: #304156; color: white; border-bottom: 1px solid #434a50;">
+        <el-icon v-if="!isCollapse" size="24"><ElementPlus /></el-icon>
+        <span v-if="!isCollapse" style="margin-left: 8px;">Element Plus</span>
+      </div>
+      
+      <!-- 側邊欄菜單 -->
+      <el-menu
+        :default-active="$route.path"
+        :collapse="isCollapse"
+        router
+        background-color="#304156"
+        text-color="#bfcbd9"
+        active-text-color="#ffffff"
+        style="border: none; height: calc(100vh - 60px);"
+      >
+        <el-menu-item index="/">
+          <el-icon><Odometer /></el-icon>
+          <template #title>儀錶板</template>
+        </el-menu-item>
+        <el-menu-item index="/users">
+          <el-icon><User /></el-icon>
+          <template #title>用戶管理</template>
+        </el-menu-item>
+        <el-menu-item index="/concerts">
+          <el-icon><VideoPlay /></el-icon>
+          <template #title>演唱會管理</template>
+        </el-menu-item>
+        <el-menu-item index="/orders">
+          <el-icon><ShoppingCart /></el-icon>
+          <template #title>訂單管理</template>
+        </el-menu-item>
+      </el-menu>
+    </el-aside>
+
+    <!-- 主要內容區域 -->
     <el-container>
-      <!-- 側邊欄 -->
-      <el-aside :width="isCollapse ? '64px' : '200px'" class="sidebar">
-        <div class="logo">
-          <el-icon v-if="!isCollapse" size="24"><ElementPlus /></el-icon>
-          <span v-if="!isCollapse" class="logo-text">Element Plus</span>
-        </div>
-        
-        <el-menu
-          :default-active="$route.path"
-          :collapse="isCollapse"
-          router
-          class="sidebar-menu"
-        >
-          <!-- 主要功能區域 -->
-          <el-menu-item index="/">
-            <el-icon><Odometer /></el-icon>
-            <template #title>儀錶板</template>
-          </el-menu-item>
-          <el-menu-item index="/users">
-            <el-icon><User /></el-icon>
-            <template #title>用戶管理</template>
-          </el-menu-item>
-          <el-menu-item index="/concerts">
-            <el-icon><VideoPlay /></el-icon>
-            <template #title>演唱會管理</template>
-          </el-menu-item>
-          <el-menu-item index="/orders">
-            <el-icon><ShoppingCart /></el-icon>
-            <template #title>訂單管理</template>
-          </el-menu-item>
-        </el-menu>
-
-        <!-- 底部功能區域 - 在 sidebar 內部 -->
-        <div class="sidebar-bottom">
-          <!-- 多國語系 -->
-          <div class="bottom-item">
-            <el-dropdown @command="handleLanguageChange" v-if="!isCollapse">
-              <el-button type="text" class="bottom-button">
-                <el-icon><Setting /></el-icon>
-                <span>多國語系</span>
-                <el-icon class="el-icon--right"><ArrowDown /></el-icon>
-              </el-button>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item command="zh-TW">繁體中文</el-dropdown-item>
-                  <el-dropdown-item command="en">English</el-dropdown-item>
-                  <el-dropdown-item command="zh-CN">简体中文</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-            <el-tooltip content="多國語系" placement="right" v-else>
-              <el-button type="text" class="bottom-button" @click="showLanguageMenu = true">
-                <el-icon><Setting /></el-icon>
-              </el-button>
-            </el-tooltip>
-          </div>
-
-          <!-- 暗黑模式 -->
-          <div class="bottom-item">
-            <el-tooltip :content="isDarkMode ? '切換到淺色模式' : '切換到暗黑模式'" placement="right">
-              <el-button type="text" class="bottom-button" @click="toggleDarkMode">
-                <el-icon><Moon v-if="!isDarkMode" /><Sunny v-else /></el-icon>
-                <span v-if="!isCollapse">{{ isDarkMode ? '淺色模式' : '暗黑模式' }}</span>
-              </el-button>
-            </el-tooltip>
-          </div>
-
-          <!-- 登入登出 -->
-          <div class="bottom-item">
-            <el-tooltip :content="isLoggedIn ? '登出' : '登入'" placement="right">
-              <el-button type="text" class="bottom-button" @click="handleLoginLogout">
-                <el-icon><SwitchButton /></el-icon>
-                <span v-if="!isCollapse">{{ isLoggedIn ? '登出' : '登入' }}</span>
-              </el-button>
-            </el-tooltip>
-          </div>
-        </div>
-      </el-aside>
-
-      <!-- 主要內容區域 -->
-      <el-container>
-        <el-header class="header">
-          <div class="header-left">
-            <el-button 
-              type="text" 
-              @click="toggleCollapse"
-              class="collapse-btn"
+      <!-- Header -->
+      <el-header style="background: white; border-bottom: 1px solid #e6e6e6; display: flex; align-items: center; justify-content: space-between; padding: 0 20px;">
+        <div style="display: flex; align-items: center;">
+          <el-button text @click="toggleCollapse" style="margin-right: 20px;">
+            <el-icon size="20">
+              <Expand v-if="isCollapse" />
+              <Fold v-else />
+            </el-icon>
+          </el-button>
+          <el-breadcrumb separator="/">
+            <el-breadcrumb-item 
+              v-for="item in breadcrumbs" 
+              :key="item.path"
+              :to="item.path"
             >
-              <el-icon size="20">
-                <Expand v-if="isCollapse" />
-                <Fold v-else />
-              </el-icon>
-            </el-button>
-            <el-breadcrumb separator="/">
-              <el-breadcrumb-item 
-                v-for="item in breadcrumbs" 
-                :key="item.path"
-                :to="item.path"
-              >
-                {{ item.name }}
-              </el-breadcrumb-item>
-            </el-breadcrumb>
-          </div>
-          <div class="header-right">
-            <el-dropdown>
-              <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item>個人資料</el-dropdown-item>
-                  <el-dropdown-item>設定</el-dropdown-item>
-                  <el-dropdown-item divided>登出</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </div>
-        </el-header>
+              {{ item.name }}
+            </el-breadcrumb-item>
+          </el-breadcrumb>
+        </div>
+        <div>
+          <el-dropdown>
+            <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item>個人資料</el-dropdown-item>
+                <el-dropdown-item>設定</el-dropdown-item>
+                <el-dropdown-item divided>登出</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+      </el-header>
 
-        <el-main class="main-content">
-          <router-view />
-        </el-main>
-      </el-container>
+      <!-- Main內容 -->
+      <el-main>
+        <router-view />
+      </el-main>
     </el-container>
-  </div>
+  </el-container>
 </template>
 
 <script setup lang="ts">
@@ -134,11 +88,6 @@ import {
   User, 
   VideoPlay,
   ShoppingCart,
-  Setting, 
-  Moon,
-  Sunny,
-  SwitchButton,
-  ArrowDown,
   ElementPlus,
   Expand,
   Fold
@@ -146,12 +95,6 @@ import {
 
 const route = useRoute()
 const isCollapse = ref(false)
-
-// 底部功能狀態
-const isDarkMode = ref(false)
-const isLoggedIn = ref(true)
-const showLanguageMenu = ref(false)
-const currentLanguage = ref('zh-TW')
 
 // 切換側邊欄收縮狀態
 const toggleCollapse = () => {
@@ -182,188 +125,4 @@ const getRouteName = (segment: string) => {
   }
   return routeNames[segment] || segment
 }
-
-// 底部功能方法
-const handleLanguageChange = (language: string) => {
-  currentLanguage.value = language
-  // 這裡可以實現語言切換邏輯
-  console.log('切換語言到:', language)
-}
-
-const toggleDarkMode = () => {
-  isDarkMode.value = !isDarkMode.value
-  // 這裡可以實現暗黑模式切換邏輯
-  document.documentElement.classList.toggle('dark', isDarkMode.value)
-  console.log('切換暗黑模式:', isDarkMode.value)
-}
-
-const handleLoginLogout = () => {
-  if (isLoggedIn.value) {
-    // 登出邏輯
-    isLoggedIn.value = false
-    console.log('用戶已登出')
-  } else {
-    // 登入邏輯
-    isLoggedIn.value = true
-    console.log('用戶已登入')
-  }
-}
 </script>
-
-<style scoped>
-.sidebar-layout {
-  height: 100vh;
-  width: 100vw;
-}
-
-.sidebar-layout .el-container {
-  height: 100%;
-}
-
-.sidebar {
-  background-color: #304156;
-  transition: width 0.3s;
-  height: 100vh; /* 固定側邊欄高度為視窗高度 */
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-.logo {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  border-bottom: 1px solid #434a50;
-  flex-shrink: 0; /* 防止被壓縮 */
-}
-
-.logo-text {
-  margin-left: 8px;
-}
-
-.sidebar-menu {
-  border: none;
-  background-color: #304156;
-  flex: 1;
-  overflow-y: auto; /* 菜單項過多時可滾動 */
-  overflow-x: hidden;
-}
-
-.sidebar-menu .el-menu-item,
-.sidebar-menu .el-sub-menu__title {
-  color: #bfcbd9;
-}
-
-.sidebar-menu .el-menu-item:hover,
-.sidebar-menu .el-sub-menu__title:hover {
-  background-color: #263445;
-  color: #409eff;
-}
-
-.sidebar-menu .el-menu-item.is-active {
-  background-color: #409eff;
-  color: white;
-}
-
-.sidebar-bottom {
-  border-top: 1px solid #434a50;
-  padding: 10px 0;
-  background-color: #304156;
-  flex-shrink: 0; /* 防止被壓縮 */
-}
-
-.bottom-item {
-  margin-bottom: 5px;
-}
-
-.bottom-item:last-child {
-  margin-bottom: 0;
-}
-
-.bottom-button {
-  width: 100%;
-  color: #bfcbd9;
-  text-align: left;
-  padding: 8px 20px;
-  border: none;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.bottom-button:hover {
-  background-color: #263445;
-  color: #409eff;
-}
-
-.bottom-button .el-icon {
-  font-size: 16px;
-}
-
-.bottom-button span {
-  font-size: 14px;
-}
-
-/* 右側內容區域 */
-.sidebar-layout .el-container:not(.sidebar) {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.header {
-  background-color: white;
-  border-bottom: 1px solid #e6e6e6;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  height: 60px; /* 固定header高度 */
-  flex-shrink: 0; /* 防止被壓縮 */
-  z-index: 100;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-}
-
-.collapse-btn {
-  margin-right: 20px;
-}
-
-.main-content {
-  background-color: #f5f5f5;
-  padding: 20px;
-  flex: 1; /* 佔滿剩餘空間 */
-  overflow-y: auto; /* 內容過多時可滾動 */
-  overflow-x: hidden;
-  max-height: calc(100vh - 60px); /* 減去header高度 */
-}
-
-/* 確保Element Plus的container組件正確布局 */
-.sidebar-layout .el-aside {
-  height: 100vh !important;
-}
-
-.sidebar-layout .el-container .el-container {
-  height: 100vh;
-  flex-direction: column;
-}
-
-.sidebar-layout .el-main {
-  padding: 0 !important; /* 移除Element Plus默認padding */
-  flex: 1 !important;
-  overflow-y: auto !important;
-}
-
-.sidebar-layout .el-header {
-  height: 60px !important;
-  padding: 0 !important;
-}
-</style>
